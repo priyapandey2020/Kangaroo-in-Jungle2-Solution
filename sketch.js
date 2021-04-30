@@ -5,10 +5,9 @@ var WIN = 2;
 var gameState = PLAY;
 
 var trex, trex_running, trex_collided;
-var ground, invisibleGround, groundImage;
+var jungle, invisiblejungle;
 
-var cloudsGroup, cloudImage;
-var obstaclesGroup, obstacle1, obstacle2, obstacle3, obstacle4, obstacle5, obstacle6;
+var obstaclesGroup, obstacle1;
 
 var score=0;
 
@@ -31,19 +30,19 @@ function preload(){
 function setup() {
   createCanvas(800, 400);
 
-  ground = createSprite(400,100,400,20);
-  ground.addImage("ground",jungleImage);
-  ground.scale=0.3
-  ground.x = width /2;
+  jungle = createSprite(400,100,400,20);
+  jungle.addImage("jungle",jungleImage);
+  jungle.scale=0.3
+  jungle.x = width /2;
 
   kangaroo = createSprite(50,200,20,50);
   kangaroo.addAnimation("running", kangaroo_running);
   kangaroo.addAnimation("collided", kangaroo_collided);
   kangaroo.scale = 0.15;
-  kangaroo.setCollider("rectangle",0,0,kangaroo.width/2,kangaroo.height/2)
+  kangaroo.setCollider("circle",0,0,300)
   kangaroo.debug=true;
     
-  invisibleGround = createSprite(400,360,1600,10);
+  invisibleGround = createSprite(400,350,1600,10);
   invisibleGround.visible = false;
 
   gameOver = createSprite(400,100);
@@ -73,14 +72,14 @@ function draw() {
    
   if (gameState===PLAY){
 
-    ground.velocityX=-3
+    jungle.velocityX=-3
 
-    if(ground.x<100)
+    if(jungle.x<100)
     {
-       ground.x=400
+       jungle.x=400
     }
    console.log(kangaroo.y)
-    if(keyDown("space")&& kangaroo.y>280) {
+    if(keyDown("space")&& kangaroo.y>270) {
       jumpSound.play();
       kangaroo.velocityY = -16;
     }
@@ -107,7 +106,7 @@ function draw() {
     restart.visible = true;
     //set velcity of each game object to 0
     kangaroo.velocityY = 0;
-    ground.velocityX = 0;
+    jungle.velocityX = 0;
     obstaclesGroup.setVelocityXEach(0);
     shrubsGroup.setVelocityXEach(0);
 
@@ -119,14 +118,13 @@ function draw() {
     shrubsGroup.setLifetimeEach(-1);
     
     if(mousePressedOver(restart)) {
-      reset();
+        reset();
     }
-
   }
 
   else if (gameState === WIN) {
     //set velcity of each game object to 0
-    ground.velocityX = 0;
+    jungle.velocityX = 0;
     kangaroo.velocityY = 0;
     obstaclesGroup.setVelocityXEach(0);
     shrubsGroup.setVelocityXEach(0);
@@ -147,12 +145,12 @@ function draw() {
   fill("black")
   text("Score: "+ score, camera.position.x,50);
   
-  if(score > 2){
+  if(score >= 5){
     kangaroo.visible = false;
     textSize(30);
     stroke(3);
     fill("black");
-    text("Congragulations!! You win the game!! ", 45,200);
+    text("Congragulations!! You win the game!! ", 70,200);
     gameState = WIN;
   }
 }
@@ -160,10 +158,13 @@ function draw() {
 function spawnShrubs() {
   //write code here to spawn the clouds
   if (frameCount % 150 === 0) {
-    var shrub = createSprite(camera.position.x+500,320,40,10);
+
+    var shrub = createSprite(camera.position.x+500,330,40,10);
+
     shrub.debug=true;
     shrub.velocityX = -(6 + 3*score/100)
-    shrub.scale = 0.5;
+    shrub.scale = 0.6;
+
     var rand = Math.round(random(1,3));
     switch(rand) {
       case 1: shrub.addImage(shrub1);
@@ -174,6 +175,7 @@ function spawnShrubs() {
               break;
       default: break;
     }
+    
     //assign scale and lifetime to the shrub           
     shrub.scale = 0.05;
      //assign lifetime to the variable
