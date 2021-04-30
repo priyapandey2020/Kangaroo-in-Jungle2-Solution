@@ -41,8 +41,9 @@ function setup() {
   kangaroo.addAnimation("collided", kangaroo_collided);
   kangaroo.scale = 0.15;
   kangaroo.setCollider("rectangle",0,0,kangaroo.width/2,kangaroo.height/2)
+  kangaroo.debug=true;
     
-  invisibleGround = createSprite(400,380,1600,10);
+  invisibleGround = createSprite(400,360,1600,10);
   invisibleGround.visible = false;
 
   gameOver = createSprite(400,100);
@@ -69,21 +70,20 @@ function setup() {
 function draw() {
   background(255);
   
-  kangaroo.x=camera.position.x-250;
+  kangaroo.x=camera.position.x-270;
    
   if (gameState===PLAY){
-   
-    camera.position.x+=6;
-    
-    if(camera.position.x>700)
+
+    ground.velocityX=-3
+
+    if(ground.x<100)
     {
-      camera.position.x=400;
-      ground.x=400
+       ground.x=400
     }
-   
-    if(keyDown("space")) {
+   console.log(kangaroo.y)
+    if(keyDown("space")&& kangaroo.y>280) {
       jumpSound.play();
-      kangaroo.velocityY = -14;
+      kangaroo.velocityY = -16;
     }
   
     kangaroo.velocityY = kangaroo.velocityY + 0.8
@@ -148,7 +148,7 @@ function draw() {
   fill("black")
   text("Score: "+ score, camera.position.x,50);
   
-  if(score > 50){
+  if(score > 2){
     kangaroo.visible = false;
     textSize(30);
     stroke(3);
@@ -161,7 +161,7 @@ function draw() {
 function spawnShrubs() {
   //write code here to spawn the clouds
   if (frameCount % 150 === 0) {
-    var shrub = createSprite(camera.position.x+450,320,40,10);
+    var shrub = createSprite(camera.position.x+500,320,40,10);
     shrub.debug=true;
     shrub.velocityX = -(6 + 3*score/100)
     shrub.scale = 0.5;
@@ -191,13 +191,13 @@ function spawnShrubs() {
 function spawnObstacles() {
   if(frameCount % 120 === 0) {
 
-    var obstacle = createSprite(camera.position.x+400,330,10,40);
-    obstacle.setCollider("rectangle",0,0,obstacle.width/2,obstacle.height/2)
+    var obstacle = createSprite(camera.position.x+400,330,40,40);
+    obstacle.setCollider("rectangle",0,0,200,200)
     obstacle.addImage(obstacle1);
     obstacle.velocityX = -(6 + 3*score/100)
     obstacle.scale = 0.15;
     //assign scale and lifetime to the obstacle           
-    
+    obstacle.debug=true    
     obstacle.lifetime = 400;
     //add each obstacle to the group
     obstaclesGroup.add(obstacle);
@@ -213,6 +213,5 @@ function reset(){
   kangaroo.changeAnimation("running", kangaroo_running);
   obstaclesGroup.destroyEach();
   shrubsGroup.destroyEach();
-  camera.position.x=400;
   score = 0;
 }
