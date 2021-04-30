@@ -63,8 +63,7 @@ function setup() {
   obstaclesGroup = new Group();
   
   score = 0;
-  ox=0;
-  cx=0;
+
 }
 
 function draw() {
